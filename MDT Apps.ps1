@@ -1,4 +1,4 @@
-$DeploymentShare = "D:\DeploymentShare"
+$DeploymentShare = "D:\MDT\DeploymentShare"
 $Source = "D:\MDT\Apps"
 $Import = $false
 
