@@ -57,7 +57,7 @@ Write-Host "Download and import Apps" -ForegroundColor green
 Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/Apps.zip" "$Apps\Apps.zip"
 Expand-Archive "$Apps\Apps.zip" -Destination "$Apps" -Force
 del $Apps\Apps.zip
-start wscript -ArgumentList $Apps'\Update` all` subfolders.vbs' -Wait
+Start wscript -ArgumentList `"$Apps\Update` all` subfolders.vbs`" -Wait
 #New-SmbShare -Name Apps -Path $Apps -ReadAccess Everyone
 Start powershell -ArgumentList $Scripts'\MDT` Apps.ps1'
 
