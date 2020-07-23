@@ -12,14 +12,16 @@ The [Scripts.zip](Scripts.zip) is downloaded and extracted to the D:\MDT\Scripts
 - Import Drivers.ps1 = This script can be used to import drivers for specific hardware. Create a folder structure in the Drivers folder the way you like and run this script to import all drivers in MDT.
 - MDT Apps.ps1 = This script is used to import applications into you Deployment share.
 - MDTExitNameToGuid.vbs = Script from Microsoft to make app deployment easier.
-- Media.ps1 = This script can be used to create an ISO that you can use in combination with [Rufus](https://rufus.ie) to create USB media. With this you can install the chosen Windows version and Apps from your USB drive.
+- Media.ps1 = This script can be used to create an ISO that you can use in combination with [Rufus](https://rufus.ie) to create USB media. With this you can install the chosen Windows version and Apps from your USB drive. The media will be created in the folder D:\MDT\Media
 - Update bootfiles.ps1 = script to update the bootfiles in WDS after adding drivers for optional NIC's or storage devices needed for WinPE.
 - WDS prompt.bat = Turn F12 prompt in WDS on or off
 - WDS_F12.bat = Turn F12 option on (only boot from WDS after pressing F12)
 - WDS_no_F12.bat = Turn F12 option off (always boot to WDS)
 
 # CustomSettings
-The [CustomSettings.zip](CustomSettings.zip) contains example files that can be used for the CustomSettings.ini in the MDT Share.
+The [CustomSettings.zip](CustomSettings.zip) contains example files that can be used for the CustomSettings.ini in the MDT Share. This makes switching between configurations in MDT really easy. You can run the CustomSetting.hta on the server to update the CustomSettings.ini in the Deploymentshare with just a few clicks.
+The files with Media in the name are used to import them when you create specific media. If you select Windows 10 of Windows all, the user will be asked to input data during deployment like domain, applications etc. If you want predefined options, you can select other files.
+You can add your own examplename.ini in the D:\MDT\CustomSettings folder for future use. The hta script will find them all.
 
 # Apps
 The [Apps.zip](Apps.zip) is downloaded and extracted to D:\MDT\Apps. This folder contains a subfolder for each application.
