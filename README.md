@@ -9,7 +9,7 @@ Run the [Download and install.ps1](Download and install.ps1) script. This script
 # Scripts
 The [Scripts.zip](Scripts.zip) is downloaded and extracted to the D:\MDT\Scripts folder and contains several scripts:
 - Download and import OS.ps1 = This script will download and import the Operating Systems that you want to deploy with MDT. If you want the latest W10 Insider Builts in MDT, just remove the ISO's from the D:\MDT\ISOs\W10Insider folder and run this script again. All others ISO's only need to be downloaded once and will not be updated.
-- Import Drivers.ps1 = This script can be used to import drivers for specific hardware. Create a folder structure in the Drivers folder the way you like and run this script to import all drivers in MDT.
+- Import Drivers.ps1 = This script can be used to import drivers for specific hardware. Create a folder structure in the Drivers folder the way you like and run this script to import all drivers in MDT. Don't forget to run the Update bootfiles.ps1 is you have added NIC or storage drivers needed for WinPE.
 - MDT Apps.ps1 = This script is used to import applications into you Deployment share.
 - MDTExitNameToGuid.vbs = Script from Microsoft to make app deployment easier.
 - Media.ps1 = This script can be used to create an ISO that you can use in combination with [Rufus](https://rufus.ie) to create USB media. With this you can install the chosen Windows version and Apps from your USB drive. The media will be created in the folder D:\MDT\Media
