@@ -1,5 +1,5 @@
-# MDT
-To automate the setup of MDT I've created all these scripts and configuration Files to setup Microsoft Deployment Toolkit as fast as possible.
+# Microsoft Deployment Toolkit (MDT)
+To automate the setup of MDT I've created all these scripts and configuration files to setup MDT as fast as possible.
 
 # Server Setup
 Setup a Windows Server OS as you normally do. Add a hard disk D: and format it with NTFS. I recommend about 100GB, but this also depends on the needed capabilities.
