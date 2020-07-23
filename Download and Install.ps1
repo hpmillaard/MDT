@@ -45,9 +45,9 @@ Expand-Archive "$ISO\ISOs.zip" -Destination $ISO -Force
 del "$ISO\ISOs.zip"
 
 Write-Host "Create Deploymentshare" -ForegroundColor green
-Import-Module "C:\Program Files\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
-MD $Deploymentshare
-New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root $Deploymentshare -Description "MDT Deployment Share" -NetworkPath "\\$ENV:COMPUTERNAME\DeploymentShare" | Add-MDTPersistentDrive
+Import-Module "$ENV:ProgramFiles\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
+MD "$Deploymentshare"
+New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "$Deploymentshare" -Description "MDT Deployment Share" -NetworkPath "\\$ENV:COMPUTERNAME\DeploymentShare" | Add-MDTPersistentDrive
 Copy "$Scripts\MDTExitNameToGuid.vbs" "$Deploymentshare\Control\MDTExitNameToGuid.vbs"
 
 Write-Host "Download and Import Operating Systems" -ForegroundColor green
