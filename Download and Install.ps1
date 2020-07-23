@@ -9,8 +9,9 @@ If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 
 Write-Host "Check for RootPath and create needed folders" -ForegroundColor green
 If (!(Test-Path $RootPath.Substring(0,2))) {clear;Write-Host "$RootPath.Substring(0,2) Drive not found! Please make sure that the drive exists and is formatted" -ForegroundColor red;pause;exit}
-$Drivers = "$RootPath\Drivers"	;If (!(Test-Path "$Drivers")) 	{MD "$Drivers"}
 $Apps = "$RootPath\Apps"	;If (!(Test-Path "$Apps")) 	{MD "$Apps"}
+$CS = "$RootPath\CustomSettings";If (!(Test-Path "$CS"))	{MD "$CS"}
+$Drivers = "$RootPath\Drivers"	;If (!(Test-Path "$Drivers")) 	{MD "$Drivers"}
 $ISO = "$RootPath\ISOs"		;If (!(Test-Path "$ISO")) 	{MD "$ISO"}
 $Scripts = "$RootPath\Scripts"	;If (!(Test-Path "$Scripts")) 	{MD "$Scripts"}
 $SW = "$RootPath\Software"	;If (!(Test-Path "$SW")) 	{MD "$SW"}
@@ -43,6 +44,11 @@ Write-Host "Download ISOs" -ForegroundColor Green
 Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/ISOs.zip" "$ISO\ISOs.zip"
 Expand-Archive "$ISO\ISOs.zip" -Destination $ISO -Force
 del "$ISO\ISOs.zip"
+
+Write-Host "Download CustomSettings" -ForegroundColor Green
+Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/CustomSettings.zip" "$CS\CustomSettings.zip"
+Expand-Archive "$CS\CustomSettings.zip" -Destination $CS -Force
+del "$CS\CustomSettings.zip"
 
 Write-Host "Create Deploymentshare" -ForegroundColor green
 Import-Module "$ENV:ProgramFiles\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
