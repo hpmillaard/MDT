@@ -23,10 +23,10 @@ Adding your own apps requires you to create a folder in D:\MDT\Apps with an inst
 
 After you have downloaded all the latest versions of the apps and added your own apps, make sure you run the D:\MDT\Scripts\MDT App.ps1 script to update the MDT Deploymentshare
 
-  # Activate MU
+## Activate MU
 This application/script will activate Microsoft Update. (Needed if you want to update Office and other Microsoft software during Windows Update)
 
-  # Finish Installation
+## Finish Installation
 These scripts customize Windows components and will install of remove the following components:
 - .Net Framework 3.5 and TelnetClient will be installed (see Windows Components.vbs)
 - Faxing and Printing features are removed (see Windows Components.vbs)
@@ -47,11 +47,11 @@ These scripts customize Windows components and will install of remove the follow
 - Screenbrightness is set to 100% (see install.vbs)
 - If you use WSUS during deployment, this will be removed at the next startup (see install.vbs)
 
-  # Fonts
+## Fonts
 All Fonts that you want to deploy can be places in the folder Fonts and will be installed during deployment.
 
-  # WLAN profiles
+## WLAN profiles
 If you need to import specific WLAN SSID's during deployment of an MDT client, you can run the D:\MDT\Apps\ConnectWLAN\export.bat script to export the needed settings for an SSID. This will create a "SSID.xml" file in the folder and will be imported when a Task Sequence is run.
 
-  # Regfiles
+## Regfiles
 Numerous registry settings will be set. Look in the Regfiles folder for all settings. If you add your own .reg file to this folder, this will be included during deployment.
