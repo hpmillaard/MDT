@@ -4,7 +4,7 @@ To automate the setup of MDT I've created all these scripts and configuration fi
 # Server Setup
 Setup a Windows Server OS as you normally do. Add a hard disk D: and format it with NTFS. I recommend about 100GB, but this also depends on the needed capabilities.
 
-Run the [Download and install.ps1]("Download and install.ps1") script. This script will download ADK, WinPE, MDT and will install WDS on the D: disk. This will also download the needed scripts that can be found in the [Scripts.zip](Scripts.zip) and [ISOs.zip](ISOs.zip)
+Run the [Download and install.ps1](Download%20and%20install.ps1) script. This script will download ADK, WinPE, MDT and will install WDS on the D: disk. This will also download the needed scripts that can be found in the [Scripts.zip](Scripts.zip) and [ISOs.zip](ISOs.zip)
 
 # Scripts
 The [Scripts.zip](Scripts.zip) is downloaded and extracted to the D:\MDT\Scripts folder and contains several scripts:
