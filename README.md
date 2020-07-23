@@ -65,3 +65,6 @@ If you need to import specific WLAN SSID's during deployment of an MDT client, y
 
 ## Regfiles
 Numerous registry settings will be set. Look in the Regfiles folder for all settings. If you add your own .reg file to this folder, this will be included during deployment.
+
+## zKMS
+Runs Windows and Office activation to Public KMS servers.
