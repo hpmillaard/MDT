@@ -17,6 +17,21 @@ $Scripts = "$RootPath\Scripts"	;If (!(Test-Path "$Scripts")) 	{MD "$Scripts"}
 $SW = "$RootPath\Software"	;If (!(Test-Path "$SW")) 	{MD "$SW"}
 clear
 
+Write-Host "Download Scripts" -ForegroundColor Green
+Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/Scripts.zip" "$Scripts\Scripts.zip"
+Expand-Archive "$Scripts\Scripts.zip" -Destination $Scripts -Force
+del "$Scripts\Scripts.zip"
+
+Write-Host "Download ISOs" -ForegroundColor Green
+Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/ISOs.zip" "$ISO\ISOs.zip"
+Expand-Archive "$ISO\ISOs.zip" -Destination $ISO -Force
+del "$ISO\ISOs.zip"
+
+Write-Host "Download CustomSettings" -ForegroundColor Green
+Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/CustomSettings.zip" "$CS\CustomSettings.zip"
+Expand-Archive "$CS\CustomSettings.zip" -Destination $CS -Force
+del "$CS\CustomSettings.zip"
+
 Write-Host "Downloading ADK and WinPE" -ForegroundColor green
 curl ((curl https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "Windows ADK"})[0].href -UseBasicParsing -OutFile "$SW\adksetup.exe"
 curl ((curl https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "Windows PE"})[0].href -UseBasicParsing -OutFile "$SW\adkwinpesetup.exe"
@@ -35,26 +50,10 @@ Start-BitsTransfer https://raw.githubusercontent.com/hpmillaard/MDT/master/XMLs/
 ren "$ENV:ProgramFiles\Microsoft Deployment Toolkit\Templates\Server.xml" "$ENV:ProgramFiles\Microsoft Deployment Toolkit\Templates\ServerORG.xml"
 Start-BitsTransfer https://raw.githubusercontent.com/hpmillaard/MDT/master/XMLs/Server.xml "$ENV:ProgramFiles\Microsoft Deployment Toolkit\Templates\Server.xml"
 
-Write-Host "Download Scripts" -ForegroundColor Green
-Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/Scripts.zip" "$Scripts\Scripts.zip"
-Expand-Archive "$Scripts\Scripts.zip" -Destination $Scripts -Force
-del "$Scripts\Scripts.zip"
-
-Write-Host "Download ISOs" -ForegroundColor Green
-Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/ISOs.zip" "$ISO\ISOs.zip"
-Expand-Archive "$ISO\ISOs.zip" -Destination $ISO -Force
-del "$ISO\ISOs.zip"
-
-Write-Host "Download CustomSettings" -ForegroundColor Green
-Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/CustomSettings.zip" "$CS\CustomSettings.zip"
-Expand-Archive "$CS\CustomSettings.zip" -Destination $CS -Force
-del "$CS\CustomSettings.zip"
-
 Write-Host "Create Deploymentshare" -ForegroundColor green
 Import-Module "$ENV:ProgramFiles\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
 MD "$Deploymentshare"
 New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "$Deploymentshare" -Description "MDT Deployment Share" -NetworkPath "\\$ENV:COMPUTERNAME\DeploymentShare" | Add-MDTPersistentDrive
-Copy "$Scripts\MDTExitNameToGuid.vbs" "$Deploymentshare\Control\MDTExitNameToGuid.vbs"
 
 Write-Host "Download and Import Operating Systems" -ForegroundColor green
 Start PowerShell -ArgumentList $Scripts'\Download` and` import` OS.ps1'
@@ -67,17 +66,18 @@ Start wscript -ArgumentList `"$Apps\Update` all` subfolders.vbs`" -Wait
 #New-SmbShare -Name Apps -Path $Apps -ReadAccess Everyone
 Start powershell -ArgumentList $Scripts'\MDT` Apps.ps1'
 
-Write-Host "Create MDT useraccount and add the information to Bootstrap.ini" -ForegroundColor green
+Write-Host "Create MDT useraccount and configure the Deploymentshare" -ForegroundColor green
 $SecureMDTPassword = ConvertTo-SecureString -String $MDTPassword -AsPlainText -Force
 New-LocalUser -AccountNeverExpires -Description "User for access to MDT Deploymentshare" -Name $MDTUsername -Password $SecureMDTPassword -PasswordNeverExpires -UserMayNotChangePassword | Add-LocalGroupMember -Group Users 
 Add-Content $Deploymentshare\Control\Bootstrap.ini "SkipBDDWelcome=Yes`nUserid=$MDTUsername`nUserPassword=$MDTPassword`nUserdomain=$ENV:COMPUTERNAME`nDeployRoot=\\$ENV:COMPUTERNAME\DeploymentShare"
+Copy "$Scripts\MDTExitNameToGuid.vbs" "$Deploymentshare\Control\MDTExitNameToGuid.vbs"
+Copy "$CS\Windows All.ini" "$Deploymentshare\Control\CustomSettings.ini"
 
-Write-Host "Update the Deployment share" -ForegroundColor green
+Write-Host "Update the Deploymentshare" -ForegroundColor green
 Update-MDTDeploymentShare -path "DS001:" -Force
 
-Write-Host "Install WDS" -ForegroundColor green
+Write-Host "Install and configure WDS" -ForegroundColor green
 Add-WindowsFeature WDS
-Write-Host "Configure WDS" -ForegroundColor green
 If ((gwmi -Class Win32_computersystem).PartOfDomain) {WDSutil /Initialize-Server /RemInst:D:\RemoteInstall /Authorize} else {WDSutil /Initialize-Server /RemInst:D:\RemoteInstall /Standalone}
 WDSutil /Add-Image /imagetype:boot /ImageFile:"$Deploymentshare\Boot\LiteTouchPE_x86.wim"
 WDSutil /Add-Image /imagetype:boot /ImageFile:"$Deploymentshare\Boot\LiteTouchPE_x64.wim"
