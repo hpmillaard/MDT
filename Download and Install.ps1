@@ -53,7 +53,8 @@ Start-BitsTransfer https://raw.githubusercontent.com/hpmillaard/MDT/master/XMLs/
 Write-Host "Create Deploymentshare" -ForegroundColor green
 Import-Module "$ENV:ProgramFiles\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
 MD "$Deploymentshare"
-New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "$Deploymentshare" -Description "MDT Deployment Share" -NetworkPath "\\$ENV:COMPUTERNAME\DeploymentShare" | Add-MDTPersistentDrive
+New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "$Deploymentshare" -Description "MDT Deployment Share" | Add-MDTPersistentDrive
+New-SmbShare -Name DeploymentShare -Path "$Deploymentshare" -FullAccess Everyone -Description "MDT Deployment Share"
 
 Write-Host "Download and Import Operating Systems" -ForegroundColor green
 Start PowerShell -ArgumentList $Scripts'\Download` and` import` OS.ps1'
