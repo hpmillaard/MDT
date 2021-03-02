@@ -17,6 +17,10 @@ $Scripts = "$RootPath\Scripts"	;If (!(Test-Path "$Scripts")) 	{MD "$Scripts"}
 $SW = "$RootPath\Software"	;If (!(Test-Path "$SW")) 	{MD "$SW"}
 clear
 
+Write-Host "Disable IE Enhanced Security Configuration" -ForegroundColor green
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}" /v "IsInstalled" /d 0 /t REG_DWORD /f
+REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}" /v "IsInstalled" /d 0 /t REG_DWORD /f 
+
 Write-Host "Download Scripts" -ForegroundColor Green
 Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/Scripts.zip" "$Scripts\Scripts.zip"
 Expand-Archive "$Scripts\Scripts.zip" -Destination $Scripts -Force
