@@ -41,7 +41,7 @@ curl ((curl https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-in
 start "$SW\adksetup.exe" -ArgumentList "/features OptionId.DeploymentTools /norestart /ceip off /q" -Wait
 
 Write-Host "Downloading and Installing WinPE" -ForegroundColor green
-curl ((curl https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "Windows PE"})[0].href -UseBasicParsing -OutFile "$SW\adkwinpesetup.exe"
+curl ((curl https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "WinPE"})[0].href -UseBasicParsing -OutFile "$SW\adkwinpesetup.exe"
 start "$SW\adkwinpesetup.exe" -ArgumentList "/features OptionId.WindowsPreinstallationEnvironment /norestart /ceip off /q" -Wait
 
 Write-Host "Downloading MDT" -ForegroundColor green
