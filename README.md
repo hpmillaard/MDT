@@ -8,7 +8,7 @@ Run the [Download and Install.ps1](Download%20and%20Install.ps1) script. This sc
 
 # Scripts
 The [Scripts.zip](Scripts.zip) is downloaded and extracted to the D:\MDT\Scripts folder and contains several scripts:
-- Download and import OS.ps1 = This script will download and import the Operating Systems that you want to deploy with MDT. If you want the latest W10 Insider Builts in MDT, just remove the ISO's from the D:\MDT\ISOs\W10Insider folder and run this script again. All others ISO's only need to be downloaded once and will not be updated.
+- Download and import OS.ps1 = This script will download and import the Operating Systems that you want to deploy with MDT. If you want the latest W11 Insider Builts in MDT, just remove the Insider ISO's from the D:\MDT\ISOs\W11 folder and run this script again. All others ISO's only need to be downloaded once and will not be updated.
 - Import Drivers.ps1 = This script can be used to import drivers for specific hardware. Create a folder structure in the Drivers folder the way you like and run this script to import all drivers in MDT. Don't forget to run the Update bootfiles.ps1 is you have added NIC or storage drivers needed for WinPE.
 - MDT Apps.ps1 = This script is used to import applications into you Deployment share.
 - MDTExitNameToGuid.vbs = Script from Microsoft to make app deployment easier.
