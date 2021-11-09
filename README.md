@@ -20,7 +20,7 @@ The [Scripts.zip](Scripts.zip) is downloaded and extracted to the D:\MDT\Scripts
 
 # CustomSettings
 The [CustomSettings.zip](CustomSettings.zip) contains example files that can be used for the CustomSettings.ini in the MDT Share. This makes switching between configurations in MDT really easy. You can run the CustomSetting.hta on the server to update the CustomSettings.ini in the Deploymentshare with just a few clicks.
-The files with Media in the name are used to import them when you create specific media. If you select Windows 10 of Windows all, the user will be asked to input data during deployment like domain, applications etc. If you want predefined options, you can select other files.
+The files with Media in the name are used to import them when you create specific media. If you select Windows 10/11 or Windows all, the user will be asked to input data during deployment like domain, applications etc. If you want predefined options, you can select other files.
 You can add your own examplename.ini in the D:\MDT\CustomSettings folder for future use. The hta script will find them all.
 
 # Apps
@@ -29,7 +29,7 @@ All applications will be installed with the install.vbs or install.bat file.
 To download the latest versions, you can easily run the D:\MDT\Apps\Update all subfolders.vbs file.
 To update a specific app, you can run the Update.ps1 file in each application folder.
 
-Adding your own apps requires you to create a folder in D:\MDT\Apps with an install.vbs or install.bat file. Please use the other scripts included as examples.
+Adding your own apps requires you to create a folder in D:\MDT\Apps with an install.vbs or install.bat file. Please use the included scripts as examples for your own install scripts.
 
 After you have downloaded all the latest versions of the apps and added your own apps, make sure you run the D:\MDT\Scripts\MDT App.ps1 script to update the MDT Deploymentshare
 
