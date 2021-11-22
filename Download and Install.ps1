@@ -61,6 +61,15 @@ MD "$Deploymentshare"
 New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "$Deploymentshare" -Description "MDT Deployment Share" | Add-MDTPersistentDrive
 New-SmbShare -Name DeploymentShare -Path "$Deploymentshare" -FullAccess Everyone -Description "MDT Deployment Share"
 
+Write-Host "Download Extra" -Fore Green
+Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/Extra.zip" "$CS\Extra.zip"
+Expand-Archive "$CS\Extra.zip" -Destination $Extra -Force
+del "$CS\Extra.zip"
+[xml]$settings = Get-Content "$Deploymentshare\Control\Settings.xml"
+$settings.Settings.'Boot.x86.ExtraDirectory' = "D:\MDT\Extra\x86"
+$settings.Settings.'Boot.x64.ExtraDirectory' = "D:\MDT\Extra\x64"
+$settings.save("$Deploymentshare\Control\Settings.xml")
+
 Write-Host "Download and Import Operating Systems" -ForegroundColor green
 Start PowerShell -ArgumentList $Scripts'\Download` and` import` OS.ps1'
 
