@@ -12,6 +12,7 @@ If (!(Test-Path $RootPath.Substring(0,2))) {clear;Write-Host "$RootPath.Substrin
 $Apps = "$RootPath\Apps"	;If (!(Test-Path "$Apps")) 	{MD "$Apps"}
 $CS = "$RootPath\CustomSettings";If (!(Test-Path "$CS"))	{MD "$CS"}
 $Drivers = "$RootPath\Drivers"	;If (!(Test-Path "$Drivers")) 	{MD "$Drivers"}
+$Extra = "$RootPath\Extra"	;If (!(Test-Path "$Extra"))	{MD "$Extra"}
 $ISO = "$RootPath\ISOs"		;If (!(Test-Path "$ISO")) 	{MD "$ISO"}
 $Scripts = "$RootPath\Scripts"	;If (!(Test-Path "$Scripts")) 	{MD "$Scripts"}
 $SW = "$RootPath\Software"	;If (!(Test-Path "$SW")) 	{MD "$SW"}
@@ -61,14 +62,16 @@ MD "$Deploymentshare"
 New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "$Deploymentshare" -Description "MDT Deployment Share" | Add-MDTPersistentDrive
 New-SmbShare -Name DeploymentShare -Path "$Deploymentshare" -FullAccess Everyone -Description "MDT Deployment Share"
 
+Write-Host "Configure Monitoring" -Fore green
+Set-ItemProperty DS001:\ -Name MonitorHost -Value $ENV:COMPUTERNAME
+Enable-MDTMonitorService -EventPort 9800 -DataPort 9801
+
 Write-Host "Download Extra" -Fore Green
 Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/Extra.zip" "$CS\Extra.zip"
 Expand-Archive "$CS\Extra.zip" -Destination $Extra -Force
 del "$CS\Extra.zip"
-[xml]$settings = Get-Content "$Deploymentshare\Control\Settings.xml"
-$settings.Settings.'Boot.x86.ExtraDirectory' = "D:\MDT\Extra\x86"
-$settings.Settings.'Boot.x64.ExtraDirectory' = "D:\MDT\Extra\x64"
-$settings.save("$Deploymentshare\Control\Settings.xml")
+Set-ItemProperty DS001:\ -Name 'Boot.x86.ExtraDirectory' -Value "$Extra\x86"
+Set-ItemProperty DS001:\ -Name 'Boot.x64.ExtraDirectory' -Value "$Extra\x64"
 
 Write-Host "Download and Import Operating Systems" -ForegroundColor green
 Start PowerShell -ArgumentList $Scripts'\Download` and` import` OS.ps1'
