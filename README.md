@@ -6,6 +6,9 @@ Setup a Windows Server OS as you normally do. Add a hard disk D: and format it w
 
 Run the [Download and Install.ps1](Download%20and%20Install.ps1) script. This script will download ADK, WinPE, MDT and will install WDS on the D: disk. This will also download the needed scripts that can be found in the [Scripts.zip](Scripts.zip) and [ISOs.zip](ISOs.zip)
 
+# x86 Support
+Because Microsoft dropped support for x86 (32 bit) in the latest ADK versions, I've added the option to support x86 in the [Download and Install.ps1](Download%20and%20Install.ps1) script. This is set to false by default, but can be set to true so that the ADK 2004 version will be installed.
+
 # Scripts
 The [Scripts.zip](Scripts.zip) is downloaded and extracted to the D:\MDT\Scripts folder and contains several scripts:
 - Download and import OS.ps1 = This script will download and import the Operating Systems that you want to deploy with MDT. If you want the latest W11 Insider Builts in MDT, just remove the Insider ISO's from the D:\MDT\ISOs\W11 folder and run this script again. All others ISO's only need to be downloaded once and will not be updated.
