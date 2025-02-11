@@ -28,37 +28,35 @@ You can add your own examplename.ini in the D:\MDT\CustomSettings folder for fut
 
 # Apps
 The [Apps.zip](Apps.zip) is downloaded and extracted to D:\MDT\Apps. This folder contains a subfolder for each application.
-All applications will be installed with the install.vbs or install.bat file.
-To download the latest versions, you can easily run the D:\MDT\Apps\Update all subfolders.vbs file.
+All applications can be installed by running the install.ps1, install.vbs or install.bat file.
+Most application installs are based on WINGET, so the last version available will be downloaded and installed on the fly.
+Some old apps need to be downloaded first. To download the latest versions, you can easily run the D:\MDT\Apps\Update all subfolders.vbs file.
 To update a specific app, you can run the Update.ps1 file in each application folder.
 
-Adding your own apps requires you to create a folder in D:\MDT\Apps with an install.vbs or install.bat file. Please use the included scripts as examples for your own install scripts.
+Adding your own apps requires you to create a folder in D:\MDT\Apps with an install.ps1 file. Please use the included scripts as examples for your own install scripts.
 
-After you have downloaded all the latest versions of the apps and added your own apps, make sure you run the D:\MDT\Scripts\MDT App.ps1 script to update the MDT Deploymentshare
+After you have downloaded all the latest versions of the apps and added your own apps, make sure you run the D:\MDT\Scripts\MDT App.ps1 script to update the MDT Deploymentshare.
 
-## Activate MU
-This application/script will activate Microsoft Update. (Needed if you want to update Office and other Microsoft software during Windows Update)
-
-## Finish Installation
+## PreInstall and PostInstall
 These scripts customize Windows components and will install of remove the following components:
-- .Net Framework 3.5 and TelnetClient will be installed (see Windows Components.vbs)
-- Faxing and Printing features are removed (see Windows Components.vbs)
-- All Appx packages, except Calculator, Photos, ScreenSketch, Stickynotes and Microsoft Store (see Windows Components.vbs)
-- All Store Apps will be updated (see Windows Components.vbs)
-- All Powershell help files will be updated (see Windows Components.vbs)
-- Recovery Agent is disabled (see Windows Components.vbs)
-- WinRM is configured (see Windows Components.vbs)
-- Winsat is run (see Windows Components.vbs)
-- Firewall is set to Private Profile (see install.vbs)
-- Firewall rules are configured (see install.vbs)
+- .Net Framework 3.5 and TelnetClient will be installed
+- Faxing and Printing features are removed
+- All Appx packages, except Calculator, Photos, ScreenSketch, Stickynotes and Microsoft Store
+- All Store Apps will be updated
+- All Powershell help files will be updated
+- Recovery Agent is disabled
+- WinRM is configured
+- Winsat is run
+- Firewall is set to Private Profile
+- Firewall rules are configured
 - Default file extentions are configured (which can easily be updated with your own preferences by running the "export DefaultApps.bat" script on a configured system)
 - Default start menu layout for all users (which can easily be updated with your own preferences by running the "export Start Menu.bat" script on a configured system)
 - If you place a "Background.jpg" in this folder, the desktop background will be set for all new user profiles
 - If you place a "UserLogo.bmp" in this folder, the user picture will be changed for the all users
-- Hibernation and Sleep will be turned off (see install.vbs)
-- No password is required after screensaver (see install.vbs)
-- Screenbrightness is set to 100% (see install.vbs)
-- If you use WSUS during deployment, this will be removed at the next startup (see install.vbs)
+- Hibernation and Sleep will be turned off
+- No password is required after screensaver
+- Screenbrightness is set to 100%
+- If you use WSUS during deployment, this will be removed at the next startup
 
 ## Fonts
 All Fonts that you want to deploy can be places in the folder Fonts and will be installed during deployment.
@@ -66,7 +64,7 @@ All Fonts that you want to deploy can be places in the folder Fonts and will be 
 ## WLAN profiles
 If you need to import specific WLAN SSID's during deployment of an MDT client, you can run the D:\MDT\Apps\ConnectWLAN\export.bat script to export the needed settings for an SSID. This will create a "SSID.xml" file in the folder and will be imported when a Task Sequence is run.
 
-## Regfiles
+## Regfiles (now executed by PreInstall)
 Numerous registry settings will be set. Look in the Regfiles folder for all settings. If you add your own .reg file to this folder, this will be included during deployment.
 
 ## zKMS
