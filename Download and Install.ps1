@@ -12,32 +12,33 @@ If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 
 Write-Host "Check for RootPath and create needed folders" -f green
 If (!(Test-Path $RootPath.Substring(0,2))) {clear;Write-Host "$RootPath.Substring(0,2) Drive not found! Please make sure that the drive exists and is formatted" -f red;pause;exit}
-$Apps = "$RootPath\Apps"	;If (!(Test-Path "$Apps")) 	{MD "$Apps"}
-$CS = "$RootPath\CustomSettings";If (!(Test-Path "$CS"))	{MD "$CS"}
-$Drivers = "$RootPath\Drivers"	;If (!(Test-Path "$Drivers")) 	{MD "$Drivers"}
-$Extra = "$RootPath\Extra"	;If (!(Test-Path "$Extra"))	{MD "$Extra"}
-$ISO = "$RootPath\ISOs"		;If (!(Test-Path "$ISO")) 	{MD "$ISO"}
-$Scripts = "$RootPath\Scripts"	;If (!(Test-Path "$Scripts")) 	{MD "$Scripts"}
-$SW = "$RootPath\Software"	;If (!(Test-Path "$SW")) 	{MD "$SW"}
+$Directories = @{ Apps = "Apps"; CS = "CustomSettings"; Drivers = "Drivers"; Extra = "Extra"; ISO = "ISOs"; Scripts = "Scripts"; SW = "Software" }
+foreach ($Key in $Directories.Keys) {
+    $FullPath = Join-Path -Path $RootPath -ChildPath $Directories[$Key]
+    If (!(Test-Path $FullPath)) {MD $FullPath | Out-Null}
+    Set-Variable -Name $Key -Value $FullPath -Scope Global
+}
 clear
 
 Write-Host "Disable IE Enhanced Security Configuration" -f green
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}" /v "IsInstalled" /d 0 /t REG_DWORD /f
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}" /v "IsInstalled" /d 0 /t REG_DWORD /f 
 
-Write-Host "Downloading and Installing ADK" -f green
 If ($SupportX86){
-	curl https://go.microsoft.com/fwlink/?linkid=2120254 -UseBasicParsing -OutFile "$SW\adksetup.exe"
-	curl https://go.microsoft.com/fwlink/?linkid=2120253 -UseBasicParsing -OutFile "$SW\adkwinpesetup.exe"
+	Write-Host "Downloading ADK with x86 support" -f green
+	iwr https://go.microsoft.com/fwlink/?linkid=2120254 -UseBasicParsing -OutFile "$SW\adksetup.exe"
+	iwr https://go.microsoft.com/fwlink/?linkid=2120253 -UseBasicParsing -OutFile "$SW\adkwinpesetup.exe"
 }else{
-	curl ((curl https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "Windows ADK"})[0].href -UseBasicParsing -OutFile "$SW\adksetup.exe"
-	curl ((curl https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "Windows PE" -or $_.outerhtml -match "WinPE"})[0].href -UseBasicParsing -OutFile "$SW\adkwinpesetup.exe"
+	Write-Host "Downloading ADK" -f green
+	iwr ((iwr https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "Windows ADK"})[0].href -UseBasicParsing -OutFile "$SW\adksetup.exe"
+	iwr ((iwr https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "Windows PE" -or $_.outerhtml -match "WinPE"})[0].href -UseBasicParsing -OutFile "$SW\adkwinpesetup.exe"
 }
+Write-Host "Installing ADK" -f green
 start "$SW\adksetup.exe" "/features OptionId.DeploymentTools /norestart /ceip off /q" -Wait
 start "$SW\adkwinpesetup.exe" "/features OptionId.WindowsPreinstallationEnvironment /norestart /ceip off /q" -Wait
 
 Write-Host "Downloading and Installing MDT" -f green
-curl ((curl https://www.microsoft.com/en-us/download/confirmation.aspx?id=54259 -UseBasicParsing).Links | ? {$_.href -match "MicrosoftDeploymentToolkit_x64.msi"})[0].href -UseBasicParsing -OutFile "$SW\MicrosoftDeploymentToolkit_x64.msi"
+iwr "https://download.microsoft.com/download/3/3/9/339BE62D-B4B8-4956-B58D-73C4685FC492/MicrosoftDeploymentToolkit_x64.msi" -OutFile "$SW\MicrosoftDeploymentToolkit_x64.msi"
 start "$SW\MicrosoftDeploymentToolkit_x64.msi" "/qb /norestart" -Wait
 
 Write-Host "Add custom template files to MDT to set defaults for Task Sequences" -f green
@@ -48,16 +49,18 @@ Start-BitsTransfer https://raw.githubusercontent.com/hpmillaard/MDT/master/XMLs/
 
 Write-Host "Create Deploymentshare" -f green
 Import-Module "$ENV:ProgramFiles\Microsoft Deployment Toolkit\bin\MicrosoftDeploymentToolkit.psd1"
-MD "$Deploymentshare"
-New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "$Deploymentshare" -Description "MDT Deployment Share" | Add-MDTPersistentDrive
-New-SmbShare -Name DeploymentShare -Path "$Deploymentshare" -FullAccess Everyone -Description "MDT Deployment Share"
+MD "$Deploymentshare" | Out-Null
+New-PSDrive -Name "DS001" -PSProvider "MDTProvider" -Root "$Deploymentshare" -Description "MDT Deployment Share" | Add-MDTPersistentDrive | Out-Null
+New-SmbShare -Name DeploymentShare -Path "$Deploymentshare" -FullAccess Everyone -Description "MDT Deployment Share" | Out-Null
 
 Write-Host "Configure Monitoring" -f green
 Set-ItemProperty DS001:\ -Name MonitorHost -Value $ENV:COMPUTERNAME
 Enable-MDTMonitorService -EventPort 9800 -DataPort 9801
 
-Write-Host "Support x86" -f green
-Set-ItemProperty DS001:\ -Name SupportX86 -Value $SupportX86
+If ($SupportX86){
+	Write-Host "Support x86" -f green
+	Set-ItemProperty DS001:\ -Name SupportX86 -Value $SupportX86
+}
 
 Write-Host "Download CustomSettings" -f Green
 Start-BitsTransfer "https://raw.githubusercontent.com/hpmillaard/MDT/master/CustomSettings.zip" "$CS\CustomSettings.zip"
@@ -105,12 +108,12 @@ Write-Host "Update the Deploymentshare" -f green
 Update-MDTDeploymentShare -path "DS001:" -Force
 
 Write-Host "Install and configure WDS" -f green
-Add-WindowsFeature WDS
-If ((gwmi -Class Win32_computersystem).PartOfDomain) {WDSutil /Initialize-Server /RemInst:D:\RemoteInstall /Authorize} else {WDSutil /Initialize-Server /RemInst:D:\RemoteInstall /Standalone}
-If ($SupportX86) {WDSutil /Add-Image /imagetype:boot /ImageFile:"$Deploymentshare\Boot\LiteTouchPE_x86.wim"}
-WDSutil /Add-Image /imagetype:boot /ImageFile:"$Deploymentshare\Boot\LiteTouchPE_x64.wim"
-WDSutil /Set-Server /AnswerClients:All
-If ((Get-WindowsFeature DHCP).InstallState -eq "Installed"){WDSutil /Set-Server /DhcpOption60:Yes}
+Add-WindowsFeature WDS | Out-Null
+If ((gwmi -Class Win32_computersystem).PartOfDomain) {WDSutil /Initialize-Server /RemInst:D:\MDT\RemoteInstall /Authorize | Out-Null} else {WDSutil /Initialize-Server /RemInst:D:\MDT\RemoteInstall /Standalone | Out-Null}
+If ($SupportX86) {WDSutil /Add-Image /imagetype:boot /ImageFile:"$Deploymentshare\Boot\LiteTouchPE_x86.wim" | Out-Null}
+WDSutil /Add-Image /imagetype:boot /ImageFile:"$Deploymentshare\Boot\LiteTouchPE_x64.wim" | Out-Null
+WDSutil /Set-Server /AnswerClients:All | Out-Null
+If ((Get-WindowsFeature DHCP).InstallState -eq "Installed"){WDSutil /Set-Server /DhcpOption60:Yes | Out-Null}
 
 clear
 Write-Host "MDT Installation has finished and ready for use" -f green
