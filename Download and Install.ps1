@@ -98,7 +98,7 @@ Start wscript `"$Apps\Update` all` subfolders.vbs`" -Wait
 Start powershell $Scripts'\MDT` Apps.ps1'
 
 Write-Host "Create MDT useraccount and configure the Deploymentshare" -F green
-$SecureMDTPassword = ConvertTo-SecureString -String $MDTPassword -AsPlainText -Force
+$SecureMDTPassword = ConvertTo-SecureString $MDTPassword -A -F
 New-LocalUser -AccountNeverExpires -Description "User for access to MDT Deploymentshare" -Name $MDTUsername -Password $SecureMDTPassword -PasswordNeverExpires -UserMayNotChangePassword | Add-LocalGroupMember -Group Users 
 ac $Deploymentshare\Control\Bootstrap.ini "SkipBDDWelcome=Yes`nUserid=$MDTUsername`nUserPassword=$MDTPassword`nUserdomain=$ENV:COMPUTERNAME`nDeployRoot=\\$ENV:COMPUTERNAME\DeploymentShare"
 Copy "$Scripts\MDTExitNameToGuid.vbs" "$Deploymentshare\Control\MDTExitNameToGuid.vbs"
