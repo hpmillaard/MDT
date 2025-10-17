@@ -6,12 +6,9 @@ Setup a Windows Server OS as you normally do. Add a hard disk D: and format it w
 
 Run the [Download and Install.ps1](Download%20and%20Install.ps1) script. This script will download ADK, WinPE, MDT and will install WDS on the D: disk. This will also download the needed scripts that can be found in the [Scripts.zip](Scripts.zip) and [ISOs.zip](ISOs.zip)
 
-# x86 Support
-Because Microsoft dropped support for x86 (32 bit) in the latest ADK versions, I've added the option to support x86 in the [Download and Install.ps1](Download%20and%20Install.ps1) script. This is set to false by default, but can be set to true so that the ADK 2004 version will be installed.
-
 # Scripts
 The [Scripts.zip](Scripts.zip) is downloaded and extracted to the D:\MDT\Scripts folder and contains several scripts:
-- Download and import OS.ps1 = This script will download and import the Operating Systems that you want to deploy with MDT. If you want the latest W11 Insider Builts in MDT, just remove the Insider ISO's from the D:\MDT\ISOs\W11 folder and run this script again. All others ISO's only need to be downloaded once and will not be updated.
+- Download and import OS.ps1 = This script will download and import the Operating Systems that you want to deploy with MDT. If you want the latest Windows 11 or Windows Server 2025 Insider Builts in MDT, just remove the Insider ISO's from the D:\MDT\ISOs folder and run this script again. All others ISO's only need to be downloaded once and will not be updated.
 - Import Drivers.ps1 = This script can be used to import drivers for specific hardware. Create a folder structure in the Drivers folder the way you like and run this script to import all drivers in MDT. Don't forget to run the Update bootfiles.ps1 is you have added NIC or storage drivers needed for WinPE.
 - MDT Apps.ps1 = This script is used to import applications into you Deployment share.
 - MDTExitNameToGuid.vbs = Script from Microsoft to make app deployment easier.
@@ -23,7 +20,7 @@ The [Scripts.zip](Scripts.zip) is downloaded and extracted to the D:\MDT\Scripts
 
 # CustomSettings
 The [CustomSettings.zip](CustomSettings.zip) contains example files that can be used for the CustomSettings.ini in the MDT Share. This makes switching between configurations in MDT really easy. You can run the CustomSetting.hta on the server to update the CustomSettings.ini in the Deploymentshare with just a few clicks.
-The files with Media in the name are used to import them when you create specific media. If you select Windows 10/11 or Windows all, the user will be asked to input data during deployment like domain, applications etc. If you want predefined options, you can select other files.
+The files with Media in the name are used to import them when you create specific media. If you select Windows 11 or Windows all, the user will be asked to input data during deployment like domain, applications etc. If you want predefined options, you can select other files.
 You can add your own examplename.ini in the D:\MDT\CustomSettings folder for future use. The hta script will find them all.
 
 # Apps
@@ -41,7 +38,7 @@ After you have downloaded all the latest versions of the apps and added your own
 These scripts customize Windows components and will install of remove the following components:
 - .Net Framework 3.5 and TelnetClient will be installed
 - Faxing and Printing features are removed
-- All Appx packages, except Calculator, Photos, ScreenSketch, Stickynotes and Microsoft Store
+- All Appx packages are removed, except Calculator, Photos, ScreenSketch, Stickynotes and Microsoft Store
 - All Store Apps will be updated
 - All Powershell help files will be updated
 - Recovery Agent is disabled
