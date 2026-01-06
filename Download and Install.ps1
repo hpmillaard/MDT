@@ -29,7 +29,7 @@ Get-FileWithCheck ((iwr https://docs.microsoft.com/en-us/windows-hardware/get-st
 Get-FileWithCheck ((iwr https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install -UseBasicParsing).Links | ? {$_.outerhtml -match "Windows PE" -or $_.outerhtml -match "WinPE"})[0].href "$SW\adkwinpesetup.exe" 1MB
 
 Write-Host "Downloading MDT" -f green
-Get-FileWithCheck "https://download.microsoft.com/download/3/3/9/339BE62D-B4B8-4956-B58D-73C4685FC492/MicrosoftDeploymentToolkit_x64.msi" "$SW\MicrosoftDeploymentToolkit_x64.msi" 10MB
+Get-FileWithCheck "https://raw.githubusercontent.com/hpmillaard/MDT/master/MicrosoftDeploymentToolkit_x64.msi" "$SW\MicrosoftDeploymentToolkit_x64.msi" 10MB
 
 Write-Host "Installing ADK" -f green
 start "$SW\adksetup.exe" "/features OptionId.DeploymentTools /norestart /ceip off /q" -Wait
